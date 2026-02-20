@@ -1,0 +1,6 @@
+node_modules/
+build/
+.claude/
+_bmad/
+_bmad-output/
+.github/
