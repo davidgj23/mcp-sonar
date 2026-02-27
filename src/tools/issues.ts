@@ -61,7 +61,7 @@ export function registerIssuesTool(
         };
       }
 
-      const result = await client.issuesSearch({
+      const result = await client.get("/api/issues/search", {
         componentKeys: resolvedKey,
         branch,
         severities,

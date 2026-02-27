@@ -13,8 +13,9 @@ export class SonarClient {
       "Basic " + Buffer.from(config.token + ":").toString("base64");
   }
 
-  async issuesSearch(
-    params: Record<string, string | number | undefined>,
+  async get(
+    path: string,
+    params: Record<string, string | number | boolean | undefined>,
   ): Promise<unknown> {
     const query = new URLSearchParams();
     for (const [key, value] of Object.entries(params)) {
@@ -23,7 +24,7 @@ export class SonarClient {
       }
     }
 
-    const url = `${this.baseUrl}/api/issues/search?${query.toString()}`;
+    const url = `${this.baseUrl}${path}?${query.toString()}`;
     const response = await fetch(url, {
       headers: { Authorization: this.authHeader },
     });

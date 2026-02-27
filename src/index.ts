@@ -4,6 +4,7 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { SonarClient } from "./sonar-client.js";
 import { registerIssuesTool } from "./tools/issues.js";
+import { registerRulesTool } from "./tools/rules.js";
 
 const SONAR_URL = process.env.SONAR_URL;
 const SONAR_TOKEN = process.env.SONAR_TOKEN;
@@ -24,6 +25,7 @@ const server = new McpServer({
 });
 
 registerIssuesTool(server, client, SONAR_PROJECT_KEY);
+registerRulesTool(server, client);
 
 async function main() {
   const transport = new StdioServerTransport();
