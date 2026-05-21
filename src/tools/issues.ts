@@ -1,23 +1,23 @@
 import { z } from "zod";
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import type { SonarClient } from "../sonar-client.js";
+import type { MicroserviceResolver, ResolutionResult } from "../microservices/resolver.js";
 
 export function registerIssuesTool(
   server: McpServer,
   client: SonarClient,
-  defaultProjectKey?: string,
+  resolver: MicroserviceResolver,
 ) {
   server.registerTool(
     "sonar_issues",
     {
       description:
-        "Search SonarQube issues (bugs, vulnerabilities, code smells) for a project. Returns raw JSON from the SonarQube API including issues[], paging, and components[].",
+        "Search SonarQube issues (bugs, vulnerabilities, code smells) for a microservice in the monorepo. The microservice name is fuzzy-matched against top-level folders; the folder name is used as the SonarQube project key. Returns raw JSON including issues[], paging, and components[].",
       inputSchema: {
-        projectKey: z
+        microservice: z
           .string()
-          .optional()
           .describe(
-            "SonarQube project key. Defaults to SONAR_PROJECT_KEY env var if not provided.",
+            "Human-friendly microservice name (e.g. 'integration gateway'). Resolved to a folder/project key via fuzzy match.",
           ),
         branch: z
           .string()
@@ -48,21 +48,14 @@ export function registerIssuesTool(
           .describe("Results per page, max 500 (default 100)."),
       },
     },
-    async ({ projectKey, branch, severities, types, statuses, page, pageSize }) => {
-      const resolvedKey = projectKey || defaultProjectKey;
-      if (!resolvedKey) {
-        return {
-          content: [
-            {
-              type: "text" as const,
-              text: "Error: projectKey is required. Provide it as a parameter or set SONAR_PROJECT_KEY env var.",
-            },
-          ],
-        };
+    async ({ microservice, branch, severities, types, statuses, page, pageSize }) => {
+      const resolution = resolver.resolve(microservice);
+      if (resolution.kind !== "match") {
+        return textResponse(formatResolutionError(resolution));
       }
 
-      const result = await client.get("/api/issues/search", {
-        componentKeys: resolvedKey,
+      const issues = await client.get("/api/issues/search", {
+        componentKeys: resolution.projectKey,
         branch,
         severities,
         types,
@@ -71,14 +64,20 @@ export function registerIssuesTool(
         ps: pageSize,
       });
 
-      return {
-        content: [
-          {
-            type: "text" as const,
-            text: JSON.stringify(result),
-          },
-        ],
-      };
+      return textResponse(JSON.stringify(issues));
     },
   );
+}
+
+type ResolutionFailure = Exclude<ResolutionResult, { kind: "match" }>;
+
+function formatResolutionError(resolution: ResolutionFailure): string {
+  if (resolution.kind === "ambiguous") {
+    return `Microservice '${resolution.input}' is ambiguous. Matches: ${resolution.matches.join(", ")}`;
+  }
+  return `Microservice '${resolution.input}' not found. Available: ${resolution.candidates.join(", ")}`;
+}
+
+function textResponse(text: string) {
+  return { content: [{ type: "text" as const, text }] };
 }
