@@ -23,7 +23,7 @@ describe("registerIssuesTool", () => {
     const server = createFakeMcpServer();
     const client = buildClient(vi.fn());
 
-    registerIssuesTool(server.asMcpServer, client, buildResolver([]));
+    registerIssuesTool(server.asMcpServer, client, buildResolver([]), "PREFIX");
 
     expect(server.registered).toHaveLength(1);
     expect(server.registered[0].name).toBe("sonar_issues");
@@ -36,6 +36,7 @@ describe("registerIssuesTool", () => {
       server.asMcpServer,
       buildClient(get),
       buildResolver(["ms_integration_gateway"]),
+      "NU0188001_Biometria_Facial_MR",
     );
 
     const response = await server.tool("sonar_issues").handler({
@@ -46,7 +47,7 @@ describe("registerIssuesTool", () => {
     });
 
     expect(get).toHaveBeenCalledWith("/api/issues/search", {
-      componentKeys: "ms_integration_gateway",
+      componentKeys: "NU0188001_Biometria_Facial_MR_ms_integration_gateway",
       branch: undefined,
       severities: "BLOCKER",
       types: undefined,
@@ -64,6 +65,7 @@ describe("registerIssuesTool", () => {
       server.asMcpServer,
       buildClient(get),
       buildResolver(["ms_payments", "ms_billing"]),
+      "PREFIX",
     );
 
     const response = await server.tool("sonar_issues").handler({
@@ -83,6 +85,7 @@ describe("registerIssuesTool", () => {
       server.asMcpServer,
       buildClient(get),
       buildResolver(["ms_integration_gateway", "ms_integration_worker"]),
+      "PREFIX",
     );
 
     const response = await server.tool("sonar_issues").handler({

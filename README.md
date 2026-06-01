@@ -2,7 +2,7 @@
 
 MCP server that wraps the SonarQube Web API for issue retrieval. Connects to any SonarQube instance and exposes `sonar_issues`, `sonar_rules`, and `sonar_list_microservices` tools over the Model Context Protocol (stdio transport).
 
-The server is designed for monorepos: you reference a microservice by its human-friendly name (e.g. `"integration gateway"`), and the server resolves it to the matching top-level folder in the monorepo. The folder name is used directly as the SonarQube project key.
+The server is designed for monorepos: you reference a microservice by its human-friendly name (e.g. `"integration gateway"`), and the server resolves it to the matching top-level folder in the monorepo. The SonarQube project key is then built by prefixing the folder name — e.g. folder `ms_antifraud` with the default prefix becomes `NU0188001_Biometria_Facial_MR_ms_antifraud`.
 
 ## Prerequisites
 
@@ -24,6 +24,7 @@ npm run build
 | `SONAR_URL` | Yes | Base URL of your SonarQube instance (e.g. `https://sonar.example.com`) |
 | `SONAR_TOKEN` | Yes | SonarQube authentication token |
 | `MONOREPO_ROOT` | No | Path to the monorepo root used to discover microservices. Defaults to `process.cwd()` (the directory where the server is launched). |
+| `SONAR_PROJECT_KEY_PREFIX` | No | Prefix prepended (with an underscore) to the resolved folder name to form the SonarQube project key. Defaults to `NU0188001_Biometria_Facial_MR`. Set to an empty string to use the folder name as-is. |
 
 ## Running
 
@@ -55,7 +56,7 @@ Add to your MCP client config (e.g. Claude Desktop `claude_desktop_config.json`)
 
 ### `sonar_issues`
 
-Search SonarQube issues for a microservice in the monorepo. The `microservice` parameter is fuzzy-matched against top-level folder names; the resolved folder name becomes the SonarQube project key.
+Search SonarQube issues for a microservice in the monorepo. The `microservice` parameter is fuzzy-matched against top-level folder names; the resolved folder name is prefixed with `SONAR_PROJECT_KEY_PREFIX` to form the SonarQube project key.
 
 **Parameters:**
 

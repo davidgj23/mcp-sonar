@@ -15,7 +15,7 @@ describe("MicroserviceResolver", () => {
 
       expect(resolver.resolve("ms_integration_gateway")).toEqual({
         kind: "match",
-        projectKey: "ms_integration_gateway",
+        folder: "ms_integration_gateway",
       });
     });
 
@@ -26,7 +26,7 @@ describe("MicroserviceResolver", () => {
 
       expect(resolver.resolve("ms-integration-gateway")).toEqual({
         kind: "match",
-        projectKey: "ms_integration_gateway",
+        folder: "ms_integration_gateway",
       });
     });
 
@@ -37,7 +37,7 @@ describe("MicroserviceResolver", () => {
 
       expect(resolver.resolve("MS_Integration_Gateway")).toEqual({
         kind: "match",
-        projectKey: "ms_integration_gateway",
+        folder: "ms_integration_gateway",
       });
     });
   });
@@ -50,7 +50,7 @@ describe("MicroserviceResolver", () => {
 
       expect(resolver.resolve("integration gateway")).toEqual({
         kind: "match",
-        projectKey: "ms_integration_gateway",
+        folder: "ms_integration_gateway",
       });
     });
 
@@ -61,7 +61,7 @@ describe("MicroserviceResolver", () => {
 
       expect(resolver.resolve("payments")).toEqual({
         kind: "match",
-        projectKey: "ms_payments",
+        folder: "ms_payments",
       });
     });
   });

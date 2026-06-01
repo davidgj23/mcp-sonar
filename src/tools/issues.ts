@@ -2,11 +2,13 @@ import { z } from "zod";
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import type { SonarClient } from "../sonar-client.js";
 import type { MicroserviceResolver, ResolutionResult } from "../microservices/resolver.js";
+import { buildProjectKey } from "../microservices/project-key.js";
 
 export function registerIssuesTool(
   server: McpServer,
   client: SonarClient,
   resolver: MicroserviceResolver,
+  projectKeyPrefix: string,
 ) {
   server.registerTool(
     "sonar_issues",
@@ -54,8 +56,9 @@ export function registerIssuesTool(
         return textResponse(formatResolutionError(resolution));
       }
 
+      const projectKey = buildProjectKey(projectKeyPrefix, resolution.folder);
       const issues = await client.get("/api/issues/search", {
-        componentKeys: resolution.projectKey,
+        componentKeys: projectKey,
         branch,
         severities,
         types,
