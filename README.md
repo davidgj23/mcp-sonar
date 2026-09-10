@@ -24,7 +24,7 @@ npm run build
 | `SONAR_URL` | Yes | Base URL of your SonarQube instance (e.g. `https://sonar.example.com`) |
 | `SONAR_TOKEN` | Yes | SonarQube authentication token |
 | `MONOREPO_ROOT` | No | Path to the monorepo root used to discover microservices. Defaults to `process.cwd()` (the directory where the server is launched). |
-| `SONAR_PROJECT_KEY_PREFIX` | No | Prefix prepended (with an underscore) to the resolved folder name to form the SonarQube project key. Defaults to `NU0188001_Biometria_Facial_MR`. Set to an empty string to use the folder name as-is. |
+| `SONAR_PROJECT_KEY_PREFIX` | No | Prefix prepended (with an underscore) to the resolved folder name to form the SonarQube project key. Defaults to the folder name of `MONOREPO_ROOT` (e.g. `NU0188001_Biometria_Facial_MR`). Set to an empty string to use the folder name as-is. |
 
 ## Running
 
