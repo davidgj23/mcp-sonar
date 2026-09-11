@@ -1,12 +1,9 @@
 import { describe, expect, it } from "vitest";
-import {
-  DEFAULT_PROJECT_KEY_PREFIX,
-  buildProjectKey,
-} from "../../src/microservices/project-key.js";
+import { buildProjectKey } from "../../src/microservices/project-key.js";
 
 describe("buildProjectKey", () => {
   it("joins the prefix and folder with a single underscore", () => {
-    expect(buildProjectKey(DEFAULT_PROJECT_KEY_PREFIX, "ms_antifraud")).toBe(
+    expect(buildProjectKey("NU0188001_Biometria_Facial_MR", "ms_antifraud")).toBe(
       "NU0188001_Biometria_Facial_MR_ms_antifraud",
     );
   });

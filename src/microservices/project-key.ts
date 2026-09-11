@@ -1,5 +1,3 @@
-export const DEFAULT_PROJECT_KEY_PREFIX = "NU0188001_Biometria_Facial_MR";
-
 /**
  * Builds the SonarQube project key from a resolved monorepo folder name.
  * The folder name (e.g. "ms_antifraud") is joined to the configured prefix

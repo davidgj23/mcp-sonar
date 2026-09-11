@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 
+import { basename } from "node:path";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { SonarClient } from "./sonar-client.js";
 import { MonorepoMicroserviceRepository } from "./microservices/repository.js";
 import { MicroserviceResolver } from "./microservices/resolver.js";
-import { DEFAULT_PROJECT_KEY_PREFIX } from "./microservices/project-key.js";
 import { registerIssuesTool } from "./tools/issues.js";
 import { registerRulesTool } from "./tools/rules.js";
 import { registerMicroservicesTool } from "./tools/microservices.js";
@@ -14,7 +14,7 @@ const SONAR_URL = process.env.SONAR_URL;
 const SONAR_TOKEN = process.env.SONAR_TOKEN;
 const MONOREPO_ROOT = process.env.MONOREPO_ROOT ?? process.cwd();
 const PROJECT_KEY_PREFIX =
-  process.env.SONAR_PROJECT_KEY_PREFIX ?? DEFAULT_PROJECT_KEY_PREFIX;
+  process.env.SONAR_PROJECT_KEY_PREFIX ?? basename(MONOREPO_ROOT);
 
 if (!SONAR_URL || !SONAR_TOKEN) {
   console.error(
